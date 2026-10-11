@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>منصة BUSINESS - إنشاء حساب استثماري</title>
+    <script src="https://jquery.com"></script>
+    <style>
+        :root {
+            --dark-black: #090a0f;
+            --brand-orange: #ff6b00;
+            --pure-white: #ffffff;
+            --gray-text: #a0aec0;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: var(--dark-black);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .register-container {
+            background: #0f121a;
+            border: 1px solid rgba(255, 107, 0, 0.2);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+            width: 380px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .brand-logo {
+            font-size: 42px;
+            color: var(--brand-orange);
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .brand-logo span { color: var(--pure-white); }
+
+        h2 {
+            color: var(--pure-white);
+            margin: 0 0 25px 0;
+            font-size: 18px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background: #131722;
+            border: 1px solid #2a2e39;
+            border-radius: 8px;
+            color: var(--pure-white);
+            font-size: 15px;
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--brand-orange);
+            outline: none;
+            box-shadow: 0 0 10px rgba(255, 107, 0, 0.2);
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: 13px;
+            background: var(--brand-orange);
+            border: none;
+            border-radius: 8px;
+            color: var(--pure-white);
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(255, 107, 0, 0.3);
+        }
+
+        .btn-register:hover {
+            background: #e05e00;
+            transform: translateY(-2px);
+        }
+
+        .status-msg {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="register-container">
+        <div class="brand-logo">$ <span>BUSINESS</span></div>
+        <h2>إنشاء حساب مستثمر جديد</h2>
+        
+        <form id="regForm">
+            <div class="input-group">
+                <input type="text" name="username" id="username" placeholder="اسم المستخدم (بالإنجليزي)" required>
+            </div>
+            <div class="input-group">
+                <input type="email" name="email" id="email" placeholder="البريد الإلكتروني" required>
+            </div>
+            <div class="input-group">
+                <input type="password" name="password" id="password" placeholder="كلمة المرور السرية" required>
+            </div>
+            <button type="submit" class="btn-register">تسجيل الحساب فوراً</button>
+        </form>
+
+        <div id="response-msg" class="status-msg"></div>
+    </div>
+
+    <script>
+        $('#regForm').on('submit', function(e) {
+            e.preventDefault();
+            $('#response-msg').text('جاري معالجة البيانات وتأمين الحساب...').css('color', 'var(--brand-orange)');
+
+            $.ajax({
+                url: 'register_process.php',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(res) {
+                    try {
+                        let data = JSON.parse(res);
+                        if(data.status === 'success') {
+                            $('#response-msg').text(data.message).css('color', '#00e676');
+                            $('#regForm')[0].reset();
+                        } else {
+                            $('#response-msg').text(data.message).css('color', '#ff3d00');
+                        }
+                    } catch(e) {
+                        $('#response-msg').text('تمت معالجة الطلب بنجاح.').css('color', '#00e676');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
